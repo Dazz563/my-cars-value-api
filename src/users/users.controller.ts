@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   NotFoundException,
+  Session,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +18,8 @@ import { User } from './entities/user.entity';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from './services/auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -25,14 +29,37 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Post('/signout')
+  signOut(@Session() session: any) {
+    session.userId = null;
+  }
+
   @Post('/signup')
-  createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.signup(createUserDto);
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
+    const user = await this.authService.signup(createUserDto);
+    session.userId = user.id;
+    return user;
+  }
+
+  // @Get('/whoami')
+  // whoAmI(@Session() session: any) {
+  //   return this.usersService.findOne(session.userId);
+  // }
+
+  @Get('/whoami')
+  @UseGuards(AuthGuard)
+  whoAmI(@CurrentUser() user: User) {
+    return user;
   }
 
   @Post('/signin')
-  signin(@Body() body: any): Promise<User> {
-    return this.authService.signin(body.email, body.password);
+  async signin(@Body() body: any, @Session() session: any): Promise<User> {
+    const user = await this.authService.signin(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Get(':id')
@@ -45,6 +72,7 @@ export class UsersController {
     return user;
   }
 
+  // We must make the email entity unique
   @Get()
   findAllUsers(@Query('email') email: string) {
     return this.usersService.findByEmail(email);
@@ -59,7 +87,4 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
-}
-function SerializerInterceptor(SerializerInterceptor: any) {
-  throw new Error('Function not implemented.');
 }

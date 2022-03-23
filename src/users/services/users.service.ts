@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
-import { AuthService } from './auth.service';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +18,10 @@ export class UsersService {
   }
 
   findOne(id: number): Promise<User> {
+    // CODE REMOVED AS current-user.interceptor is hijacking this error
+    // if (!id) {
+    //   throw new NotFoundException('No user logged in');
+    // }
     return this.userRepo.findOne(id);
   }
 
