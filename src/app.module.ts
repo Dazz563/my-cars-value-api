@@ -1,24 +1,53 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_PIPE } from '@nestjs/core';
+const cookieSession = require('cookie-session');
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'my_car_value_db',
-      autoLoadEntities: true,
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          type: 'mysql',
+          database: config.get<string>('DB_NAME'),
+          host: config.get<string>('HOST'),
+          username: config.get<string>('USERNAME'),
+          password: config.get<string>('PASSWORD'),
+          port: config.get<number>('PORT'),
+          synchronize: true,
+          autoLoadEntities: true,
+        };
+      },
     }),
     UsersModule,
     ReportsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // Applying a globally scoped pipe
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({ whitelist: true }),
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  // Applying a globally scoped middleware
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: ['kjsdhkjdfhskfh'],
+        }),
+      )
+      .forRoutes('*');
+  }
+}
