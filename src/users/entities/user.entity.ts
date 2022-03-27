@@ -1,3 +1,4 @@
+import { Report } from 'src/reports/entities/report.entity';
 import {
   CreateDateColumn,
   UpdateDateColumn,
@@ -7,6 +8,7 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -28,6 +30,9 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
 
   // Hooks (triggered ONLY with create() in typeorm repository)
   @AfterInsert()
