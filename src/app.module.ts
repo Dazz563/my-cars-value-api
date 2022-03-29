@@ -12,21 +12,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          type: 'mysql',
-          database: config.get<string>('DB_NAME'),
-          host: config.get<string>('HOST'),
-          username: config.get<string>('USERNAME'),
-          password: config.get<string>('PASSWORD'),
-          port: config.get<number>('PORT'),
-          synchronize: true,
-          autoLoadEntities: true,
-        };
-      },
-    }),
+    TypeOrmModule.forRoot(),
+    // TypeOrmModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (config: ConfigService) => {
+    //     return {
+    //       type: 'mysql',
+    //       database: config.get<string>('DB_NAME'),
+    //       host: config.get<string>('HOST'),
+    //       username: config.get<string>('USERNAME'),
+    //       password: config.get<string>('PASSWORD'),
+    //       port: config.get<number>('PORT'),
+    //       synchronize: true,
+    //       autoLoadEntities: true,
+    //     };
+    //   },
+    // }),
     UsersModule,
     ReportsModule,
   ],
@@ -40,12 +41,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
   // Applying a globally scoped middleware
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['kjsdhkjdfhskfh'],
+          keys: [this.configService.get('COOKIE_KEY')],
         }),
       )
       .forRoutes('*');
