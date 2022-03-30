@@ -19,14 +19,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     //     return {
     //       type: 'mysql',
     //       database: config.get<string>('DB_NAME'),
-    //       host: config.get<string>('HOST'),
+    //       synchronize: true,
+    //       autoLoadEntities: true,
     //       username: config.get<string>('USERNAME'),
     //       password: config.get<string>('PASSWORD'),
     //       port: config.get<number>('PORT'),
-    //       synchronize: true,
-    //       autoLoadEntities: true,
-    //     };
-    //   },
+    //       host: config.get<string>('HOST')
+    //     }
+    //   }
     // }),
     UsersModule,
     ReportsModule,
