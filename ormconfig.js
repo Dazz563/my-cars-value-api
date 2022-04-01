@@ -9,26 +9,35 @@ const dbConfig = {
 switch (process.env.NODE_ENV) {
   case 'development':
     Object.assign(dbConfig, {
-      type: 'mysql',
-      database: 'my_car_value_db',
+      type: process.env.TYPE,
+      database: process.env.DB_NAME,
       entities: ['**/*.entity.js'],
-      host: 'localhost',
-      username: 'root',
-      password: 'root',
+      host: process.env.HOST,
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD,
     });
     break;
   case 'test':
     Object.assign(dbConfig, {
-      type: 'mysql',
-      database: 'test_my_car_value_db',
-      entities: ['**/*.entity.js'],
-      host: 'localhost',
-      username: 'root',
-      password: 'root',
+      type: process.env.TYPE,
+      database: process.env.DB_NAME,
+      entities: ['**/*.entity.ts'],
+      host: process.env.HOST,
+      username: process.env.USERNAME,
+      password: process.env.USERNAME,
       migrationsRun: true,
     });
     break;
   case 'production':
+    Object.assign(dbConfig, {
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      migrationsRun: true,
+      entities: ['**/*.entity.js'],
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    });
   default:
     throw new Error('unknown environment');
 }
