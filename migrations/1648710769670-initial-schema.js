@@ -24,88 +24,6 @@ module.exports = class initialSchema1648710769670 {
   //   }
 
   // PROD MIGRATION
-  //   async up(queryRunner) {
-  //     await queryRunner.createTable(
-  //       new Table({
-  //         name: 'user',
-  //         columns: [
-  //           {
-  //             name: 'id',
-  //             type: 'integer',
-  //             isPrimary: true,
-  //             isGenerated: true,
-  //             generationStrategy: 'increment',
-  //           },
-  //           {
-  //             name: 'email',
-  //             type: 'varchar',
-  //           },
-  //           {
-  //             name: 'password',
-  //             type: 'varchar',
-  //           },
-  //           {
-  //             name: 'username',
-  //             type: 'varchar',
-  //           },
-  //           {
-  //             name: 'admin',
-  //             type: 'boolean',
-  //             default: 'true',
-  //           },
-  //           {
-  //             name: 'created_at',
-  //             type: 'timestamp',
-  //             default: 'now()',
-  //           },
-  //           {
-  //             name: 'updated_at',
-  //             type: 'timestamp',
-  //             default: 'now()',
-  //           },
-  //         ],
-  //       }),
-  //     );
-
-  //     await queryRunner.createTable(
-  //       new Table({
-  //         name: 'report',
-  //         columns: [
-  //           {
-  //             name: 'id',
-  //             type: 'integer',
-  //             isPrimary: true,
-  //             isGenerated: true,
-  //             generationStrategy: 'increment',
-  //           },
-  //           { name: 'approved', type: 'boolean', default: 'false' },
-  //           { name: 'price', type: 'float' },
-  //           { name: 'make', type: 'varchar' },
-  //           { name: 'model', type: 'varchar' },
-  //           { name: 'year', type: 'integer' },
-  //           { name: 'lng', type: 'float' },
-  //           { name: 'lat', type: 'float' },
-  //           { name: 'km', type: 'integer' },
-  //           {
-  //             name: 'created_at',
-  //             type: 'timestamp',
-  //             default: 'now()',
-  //           },
-  //           {
-  //             name: 'updated_at',
-  //             type: 'timestamp',
-  //             default: 'now()',
-  //           },
-  //           { name: 'user_id', type: 'integer' },
-  //         ],
-  //       }),
-  //     );
-  //   }
-
-  //   async down(queryRunner) {
-  //     await queryRunner.query(`DROP TABLE ""report""`);
-  //     await queryRunner.query(`DROP TABLE ""user""`);
-  //   }
   async up(queryRunner) {
     await queryRunner.createTable(
       new Table({
@@ -127,9 +45,23 @@ module.exports = class initialSchema1648710769670 {
             type: 'varchar',
           },
           {
+            name: 'username',
+            type: 'varchar',
+          },
+          {
             name: 'admin',
             type: 'boolean',
             default: 'true',
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
           },
         ],
       }),
@@ -153,8 +85,18 @@ module.exports = class initialSchema1648710769670 {
           { name: 'year', type: 'integer' },
           { name: 'lng', type: 'float' },
           { name: 'lat', type: 'float' },
-          { name: 'mileage', type: 'integer' },
-          { name: 'userId', type: 'integer' },
+          { name: 'km', type: 'integer' },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          { name: 'user_id', type: 'integer' },
         ],
       }),
     );
