@@ -30,7 +30,7 @@ switch (process.env.NODE_ENV) {
     break;
   case 'production':
     Object.assign(dbConfig, {
-      type: 'postgres',
+      type: 'mysql',
       url: process.env.DATABASE_URL,
       migrationsRun: true,
       entities: ['**/*.entity.js'],
